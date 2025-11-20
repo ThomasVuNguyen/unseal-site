@@ -1,0 +1,48 @@
+:root {
+  --white: #ffffff;
+  --black: #000000;
+  --helium-gradient-start-rgb: 21, 38, 113;
+  --helium-gradient-start: rgb(var(--helium-gradient-start-rgb));
+  --helium-gradient-mid-rgb: 27, 44, 120;
+  --helium-gradient-mid: rgb(var(--helium-gradient-mid-rgb));
+  --helium-gradient-end: #5669bd;
+  --helium-gradient: linear-gradient(180deg, var(--helium-gradient-start) 10%, var(--helium-gradient-mid) 30%, var(--helium-gradient-end) 100%);
+  --helium-elevated: 175, 190, 255;
+  --helium-elevated-5: rgba(var(--helium-elevated), .05);
+  --helium-elevated-10: rgba(var(--helium-elevated), .1);
+  --helium-elevated-20: rgba(var(--helium-elevated), .2);
+  --helium-elevated-25: rgba(var(--helium-elevated), .25);
+  --helium-elevated-30: rgba(var(--helium-elevated), .3);
+  --helium-elevated-40: rgba(var(--helium-elevated), .4);
+  --helium-elevated-50: rgba(var(--helium-elevated), .5);
+  --helium-elevated-80: rgba(var(--helium-elevated), .8);
+  --helium-elevated-100: rgba(var(--helium-elevated), 1);
+  --header-mask-gradient: linear-gradient(
+    180deg,
+    rgba(var(--helium-gradient-start-rgb), 1) 0%,
+    rgba(var(--helium-gradient-start-rgb), .9904) 6.25%,
+    rgba(var(--helium-gradient-start-rgb), .9614) 12.5%,
+    rgba(var(--helium-gradient-start-rgb), .9157) 18.75%,
+    rgba(var(--helium-gradient-start-rgb), .8536) 25%,
+    rgba(var(--helium-gradient-start-rgb), .7778) 31.25%,
+    rgba(var(--helium-gradient-start-rgb), .6913) 37.5%,
+    rgba(var(--helium-gradient-start-rgb), .5975) 43.75%,
+    rgba(var(--helium-gradient-start-rgb), .5) 50%,
+    rgba(var(--helium-gradient-start-rgb), .4025) 56.25%,
+    rgba(var(--helium-gradient-start-rgb), .3087) 62.5%,
+    rgba(var(--helium-gradient-start-rgb), .2222) 68.75%,
+    rgba(var(--helium-gradient-start-rgb), .1464) 75%,
+    rgba(var(--helium-gradient-start-rgb), .0843) 81.25%,
+    rgba(var(--helium-gradient-start-rgb), .0381) 87.5%,
+    rgba(var(--helium-gradient-start-rgb), .0096) 93.75%,
+    rgba(var(--helium-gradient-start-rgb), 0) 100%
+  );
+  --white-80: rgba(255, 255, 255, .8);
+  --white-85: rgba(255, 255, 255, .85);
+  --page-scroll-gradient-mask: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 1) 80%,
+    rgba(0, 0, 0, .1) 90%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
