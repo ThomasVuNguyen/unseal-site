@@ -1,13 +1,13 @@
 :root {
-  --white: #ffffff;
-  --black: #000000;
-  --helium-gradient-start-rgb: 21, 38, 113;
+  --white: #f3f1e4; /* Paper */
+  --black: #212121; /* Charcoal */
+  --helium-gradient-start-rgb: 248, 111, 84; /* Coral */
   --helium-gradient-start: rgb(var(--helium-gradient-start-rgb));
-  --helium-gradient-mid-rgb: 27, 44, 120;
+  --helium-gradient-mid-rgb: 83, 124, 247; /* Royal Blue */
   --helium-gradient-mid: rgb(var(--helium-gradient-mid-rgb));
-  --helium-gradient-end: #5669bd;
+  --helium-gradient-end: #00a6a6; /* Light Sea Green */
   --helium-gradient: linear-gradient(180deg, var(--helium-gradient-start) 10%, var(--helium-gradient-mid) 30%, var(--helium-gradient-end) 100%);
-  --helium-elevated: 175, 190, 255;
+  --helium-elevated: 243, 241, 228; /* Paper */
   --helium-elevated-5: rgba(var(--helium-elevated), .05);
   --helium-elevated-10: rgba(var(--helium-elevated), .1);
   --helium-elevated-20: rgba(var(--helium-elevated), .2);
