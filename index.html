@@ -223,6 +223,18 @@
                         <h2 class="svelte-ghnu1u">Recent notes</h2>
                         <p class="landing-paragraph svelte-ghnu1u">What researchers and readers want to see next.</p>
                     </div>
+                    <div class="feedback-slider-nav">
+                        <button class="button thin" type="button" id="feedback-prev" aria-label="Previous feedback">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M15 6l-6 6l6 6"></path>
+                            </svg>
+                        </button>
+                        <button class="button thin" type="button" id="feedback-next" aria-label="Next feedback">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9 18l6 -6l-6 -6"></path>
+                            </svg>
+                        </button>
+                    </div>
                     <div class="feedback-list" id="feedback-items" aria-live="polite"></div>
                     <p class="feedback-empty" id="feedback-empty">Be the first to leave a note.</p>
                 </div>
@@ -241,7 +253,6 @@
                     </div>
                     <div class="form-actions">
                         <button type="submit" class="button primary">Post feedback</button>
-                        <p class="fine-print">Stored in your browser so you can see your post again.</p>
                     </div>
                 </form>
             </div>
@@ -322,9 +333,10 @@
             </button>
             <div class="paragraph svelte-ghnu1u tight">
                 <h2 class="svelte-ghnu1u">Join the waitlist</h2>
-                <p class="landing-paragraph svelte-ghnu1u">Thanks for the feedback. Drop your email so we can invite you when Unseal is ready.</p>
+                <p class="landing-paragraph svelte-ghnu1u">Thanks for the feedback. Drop your name and email so we can invite you when Unseal is ready.</p>
             </div>
             <form id="waitlist-form" class="waitlist-form">
+                <input id="waitlist-name" name="name" type="text" placeholder="Your name" required />
                 <input id="waitlist-email" name="email" type="email" placeholder="you@example.com" required />
                 <button type="submit" class="button primary thin">Save my spot</button>
             </form>
@@ -332,6 +344,6 @@
         </div>
     </div>
     <div id="page-background" class="svelte-12qhfyh"></div>
-    <script src="script.js"></script>
+    <script type="module" src="script.js"></script>
 </body>
 </html>

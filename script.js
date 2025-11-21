@@ -1,4 +1,41 @@
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js';
+import {
+    getAnalytics,
+    isSupported as analyticsSupported,
+} from 'https://www.gstatic.com/firebasejs/10.11.1/firebase-analytics.js';
+import {
+    getFirestore,
+    collection,
+    getDocs,
+    addDoc,
+    query,
+    orderBy,
+    limit as fbLimit,
+    serverTimestamp,
+} from 'https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js';
+
 const CTA_URL = window.location.href.split('#')[0];
+
+const firebaseConfig = {
+    apiKey: 'AIzaSyC-KIId78VZb2nDJK-tJ5aQSEFofn6KfXI',
+    authDomain: 'comfyshare-a8fd8.firebaseapp.com',
+    projectId: 'comfyshare-a8fd8',
+    storageBucket: 'comfyshare-a8fd8.firebasestorage.app',
+    messagingSenderId: '968723415164',
+    appId: '1:968723415164:web:151cc1b69b47a8947909f9',
+    measurementId: 'G-VN70KHXEKC',
+};
+
+let firestore = null;
+try {
+    const app = initializeApp(firebaseConfig);
+    firestore = getFirestore(app);
+    analyticsSupported().then((supported) => {
+        if (supported) getAnalytics(app);
+    });
+} catch (error) {
+    console.error('Firebase init failed', error);
+}
 
 const menuToggle = document.getElementById('menu-toggle');
 const links = document.getElementById('links');
@@ -72,11 +109,8 @@ const downloadButtons = document.querySelectorAll('[data-download-button]');
 downloadButtons.forEach((button) => {
     button.addEventListener('click', (event) => {
         event.preventDefault();
-        if (isMobileEnv()) {
-            openDialog();
-            return;
-        }
-        scrollToCTA();
+        hydrateWaitlist();
+        openWaitlistModal();
     });
 });
 
@@ -152,62 +186,51 @@ document.querySelectorAll('img.svelte-bkiq9').forEach((img) => {
     }
 });
 
-const FEEDBACK_STORAGE_KEY = 'unseal-feedback';
-const seedFeedback = [
-    {
-        name: 'Dr. Malik R.',
-        role: 'Clinical researcher',
-        message: 'Keep rapid dissemination but add lightweight quality checks that don’t slow us down.',
-        createdAt: '2024-04-12T12:00:00Z',
-    },
-    {
-        name: 'Irene K.',
-        role: 'Open science lead',
-        message: 'Let authors pick licenses easily so code, data, and text reuse is clear from the start.',
-        createdAt: '2024-04-18T12:00:00Z',
-    },
-    {
-        name: 'Gavin T.',
-        role: 'Reader & developer',
-        message: 'Build space for post-publication review—upvotes alone don’t capture expertise.',
-        createdAt: '2024-04-24T12:00:00Z',
-    },
-];
-
 const feedbackList = document.getElementById('feedback-items');
 const feedbackEmpty = document.getElementById('feedback-empty');
 const feedbackForm = document.getElementById('feedback-form');
+const feedbackPrev = document.getElementById('feedback-prev');
+const feedbackNext = document.getElementById('feedback-next');
 const waitlistModal = document.getElementById('waitlist-modal');
 const waitlistForm = document.getElementById('waitlist-form');
+const waitlistName = document.getElementById('waitlist-name');
 const waitlistEmail = document.getElementById('waitlist-email');
 const waitlistThanks = document.getElementById('waitlist-thanks');
 const waitlistCloseButtons = document.querySelectorAll('[data-close-waitlist]');
-const WAITLIST_EMAIL_KEY = 'unseal-waitlist-email';
-
-const loadUserFeedback = () => {
-    try {
-        const stored = localStorage.getItem(FEEDBACK_STORAGE_KEY);
-        return stored ? JSON.parse(stored) : [];
-    } catch (_) {
-        return [];
-    }
-};
-
-const saveUserFeedback = (entries) => {
-    try {
-        localStorage.setItem(FEEDBACK_STORAGE_KEY, JSON.stringify(entries));
-    } catch (_) {
-        // Ignore storage failures.
-    }
-};
-
-let userFeedback = loadUserFeedback();
+const WAITLIST_INFO_KEY = 'unseal-waitlist-info';
+let remoteFeedback = [];
+const TRUNCATE_LIMIT = 240;
 
 const formatDate = (isoString) => {
     if (!isoString) return '';
     const date = new Date(isoString);
     if (Number.isNaN(date.getTime())) return '';
     return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+};
+
+const fetchRemoteFeedback = async () => {
+    if (!firestore) return [];
+    try {
+        const q = query(collection(firestore, 'feedback'), orderBy('createdAt', 'desc'), fbLimit(50));
+        const snapshot = await getDocs(q);
+        return snapshot.docs
+            .map((doc) => {
+                const data = doc.data() || {};
+                const createdAt = data.createdAt?.toDate?.()
+                    ? data.createdAt.toDate().toISOString()
+                    : data.createdAt;
+                return {
+                    name: data.name || 'Anonymous',
+                    role: data.role || 'Community member',
+                    message: data.message || '',
+                    createdAt: createdAt || '',
+                };
+            })
+            .filter((item) => item.message);
+    } catch (error) {
+        console.error('Failed to load feedback from Firestore', error);
+        return [];
+    }
 };
 
 const openWaitlistModal = () => {
@@ -226,18 +249,25 @@ const closeWaitlistModal = () => {
 };
 
 const hydrateWaitlist = () => {
-    if (!waitlistEmail || !waitlistThanks) return;
-    const storedEmail = (() => {
-        try {
-            return localStorage.getItem(WAITLIST_EMAIL_KEY);
-        } catch (_) {
-            return null;
+    if (!waitlistThanks) return;
+    let info = null;
+    try {
+        const stored = localStorage.getItem(WAITLIST_INFO_KEY);
+        info = stored ? JSON.parse(stored) : null;
+        if (!info) {
+            const legacyEmail = localStorage.getItem('unseal-waitlist-email');
+            if (legacyEmail) info = { name: '', email: legacyEmail };
         }
-    })();
-    if (storedEmail) {
-        waitlistEmail.value = storedEmail;
+    } catch (_) {
+        info = null;
+    }
+    if (info) {
+        if (waitlistName) waitlistName.value = info.name || '';
+        if (waitlistEmail) waitlistEmail.value = info.email || '';
         waitlistThanks.classList.remove('hidden');
     } else {
+        if (waitlistName) waitlistName.value = '';
+        if (waitlistEmail) waitlistEmail.value = '';
         waitlistThanks.classList.add('hidden');
     }
 };
@@ -245,7 +275,7 @@ const hydrateWaitlist = () => {
 const renderFeedback = () => {
     if (!feedbackList || !feedbackEmpty) return;
     feedbackList.innerHTML = '';
-    const combined = [...userFeedback, ...seedFeedback].sort((a, b) => {
+    const combined = [...remoteFeedback].sort((a, b) => {
         const aTime = new Date(a.createdAt || Date.now()).getTime();
         const bTime = new Date(b.createdAt || Date.now()).getTime();
         return bTime - aTime;
@@ -278,10 +308,33 @@ const renderFeedback = () => {
 
         const message = document.createElement('p');
         message.className = 'feedback-message';
-        message.textContent = entry.message;
+        const fullMessage = (entry.message || '').trim();
+        const needsTruncate = fullMessage.length > TRUNCATE_LIMIT;
+        const truncated = needsTruncate ? `${fullMessage.slice(0, TRUNCATE_LIMIT).trimEnd()}…` : fullMessage;
+        message.textContent = truncated || '—';
 
-        card.append(meta, message);
+        if (needsTruncate) {
+            const toggle = document.createElement('button');
+            toggle.type = 'button';
+            toggle.className = 'button thin truncate-toggle';
+            toggle.textContent = 'Show more';
+            toggle.addEventListener('click', () => {
+                const expanded = toggle.dataset.expanded === 'true';
+                toggle.dataset.expanded = String(!expanded);
+                message.textContent = expanded ? truncated : fullMessage;
+                toggle.textContent = expanded ? 'Show more' : 'Show less';
+            });
+            card.append(meta, message, toggle);
+        } else {
+            card.append(meta, message);
+        }
+
         feedbackList.appendChild(card);
+    });
+
+    const needsNav = feedbackList.scrollWidth > feedbackList.clientWidth + 8;
+    [feedbackPrev, feedbackNext].forEach((btn) => {
+        if (btn) btn.classList.toggle('hidden', !needsNav);
     });
 };
 
@@ -301,23 +354,47 @@ feedbackForm?.addEventListener('submit', (event) => {
         createdAt: new Date().toISOString(),
     };
 
-    userFeedback = [newEntry, ...userFeedback];
-    saveUserFeedback(userFeedback);
+    remoteFeedback = [newEntry, ...remoteFeedback];
     renderFeedback();
     feedbackForm.reset();
     hydrateWaitlist();
     openWaitlistModal();
+    if (firestore) {
+        addDoc(collection(firestore, 'feedback'), {
+            name: newEntry.name,
+            role: newEntry.role,
+            message: newEntry.message,
+            createdAt: serverTimestamp(),
+        }).catch((error) => console.error('Failed to write feedback to Firestore', error));
+    }
 });
+
+const scrollFeedback = (direction) => {
+    if (!feedbackList) return;
+    const amount = feedbackList.clientWidth * 0.9;
+    feedbackList.scrollBy({ left: direction * amount, behavior: 'smooth' });
+};
+
+feedbackPrev?.addEventListener('click', () => scrollFeedback(-1));
+feedbackNext?.addEventListener('click', () => scrollFeedback(1));
 
 waitlistForm?.addEventListener('submit', (event) => {
     event.preventDefault();
     if (!waitlistEmail) return;
     const email = waitlistEmail.value.trim();
-    if (!email || !email.includes('@')) return;
+    const name = (waitlistName?.value || '').trim();
+    if (!email || !email.includes('@') || !name) return;
     try {
-        localStorage.setItem(WAITLIST_EMAIL_KEY, email);
+        localStorage.setItem(WAITLIST_INFO_KEY, JSON.stringify({ name, email }));
     } catch (_) {
         // Ignore storage failures.
+    }
+    if (firestore) {
+        addDoc(collection(firestore, 'waitlist'), {
+            name,
+            email,
+            createdAt: serverTimestamp(),
+        }).catch((error) => console.error('Failed to write waitlist to Firestore', error));
     }
     waitlistThanks?.classList.remove('hidden');
     waitlistEmail.value = '';
@@ -338,5 +415,9 @@ document.addEventListener('keydown', (event) => {
 });
 
 hydrateWaitlist();
+fetchRemoteFeedback().then((entries) => {
+    remoteFeedback = entries;
+    renderFeedback();
+});
 
 renderFeedback();
