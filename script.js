@@ -1,3 +1,4 @@
+import { firebaseConfig } from './firebase-config.js';
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js';
 import {
     getAnalytics,
@@ -15,16 +16,6 @@ import {
 } from 'https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js';
 
 const CTA_URL = window.location.href.split('#')[0];
-
-const firebaseConfig = {
-    apiKey: 'AIzaSyC-KIId78VZb2nDJK-tJ5aQSEFofn6KfXI',
-    authDomain: 'comfyshare-a8fd8.firebaseapp.com',
-    projectId: 'comfyshare-a8fd8',
-    storageBucket: 'comfyshare-a8fd8.firebasestorage.app',
-    messagingSenderId: '968723415164',
-    appId: '1:968723415164:web:151cc1b69b47a8947909f9',
-    measurementId: 'G-VN70KHXEKC',
-};
 
 let firestore = null;
 try {
