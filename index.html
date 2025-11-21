@@ -204,11 +204,6 @@
         </section>
 
         <section id="bangs" class="horizontal-section big svelte-1ksuzg">
-            <div id="bang-preview" class="svelte-1ksuzg">
-                <div id="browser-bang" class="image small svelte-bkiq9" style="aspect-ratio: 1012 / 688;--image-radius: 14px" aria-hidden="true">
-                    <img src="assets/bangs.avif" loading="lazy" width="1012" height="688" class="svelte-bkiq9 shadow" alt="Placeholder interface preview for Unseal. Replace this image with your own later." />
-                </div>
-            </div>
             <div class="section-text-stack">
                 <div class="paragraph svelte-ghnu1u">
                     <h1 class="svelte-ghnu1u">Help shape Unseal</h1>
@@ -220,6 +215,45 @@
                         <li>Anything else you want to share?</li>
                     </ul>
                     <p class="landing-paragraph svelte-ghnu1u">Share your thoughts and join the waitlist to test Unseal as we build.</p>
+                </div>
+            </div>
+            <div class="feedback-panel">
+                <div class="feedback-list-header">
+                    <div class="paragraph svelte-ghnu1u tight">
+                        <h2 class="svelte-ghnu1u">Recent notes</h2>
+                        <p class="landing-paragraph svelte-ghnu1u">What researchers and readers want to see next.</p>
+                    </div>
+                    <div class="feedback-list" id="feedback-items" aria-live="polite"></div>
+                    <p class="feedback-empty" id="feedback-empty">Be the first to leave a note.</p>
+                </div>
+                <form id="feedback-form" class="feedback-form">
+                    <div class="form-row">
+                        <label for="feedback-name">Name (optional)</label>
+                        <input id="feedback-name" name="name" type="text" placeholder="Ada Lovelace" />
+                    </div>
+                    <div class="form-row">
+                        <label for="feedback-role">Field or role (optional)</label>
+                        <input id="feedback-role" name="role" type="text" placeholder="Astrophysicist, Open researcher, Reader..." />
+                    </div>
+                    <div class="form-row">
+                        <label for="feedback-message">Your feedback</label>
+                        <textarea id="feedback-message" name="message" rows="3" placeholder="What do you want Unseal to prioritize?" required></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="button primary">Post feedback</button>
+                        <p class="fine-print">Stored in your browser so you can see your post again.</p>
+                    </div>
+                </form>
+                <div class="waitlist-box hidden" id="waitlist-prompt">
+                    <div class="paragraph svelte-ghnu1u tight">
+                        <h2 class="svelte-ghnu1u">Join the waitlist</h2>
+                        <p class="landing-paragraph svelte-ghnu1u">Drop your email so we can invite you when Unseal is ready.</p>
+                    </div>
+                    <form id="waitlist-form" class="waitlist-form">
+                        <input id="waitlist-email" name="email" type="email" placeholder="you@example.com" required />
+                        <button type="submit" class="button primary thin">Save my spot</button>
+                    </form>
+                    <p id="waitlist-thanks" class="fine-print hidden">Added! We’ll reach out when the waitlist opens.</p>
                 </div>
             </div>
         </section>

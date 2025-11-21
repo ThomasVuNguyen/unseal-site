@@ -151,3 +151,159 @@ document.querySelectorAll('img.svelte-bkiq9').forEach((img) => {
         img.addEventListener('load', markLoaded, { once: true });
     }
 });
+
+const FEEDBACK_STORAGE_KEY = 'unseal-feedback';
+const seedFeedback = [
+    {
+        name: 'Dr. Malik R.',
+        role: 'Clinical researcher',
+        message: 'Keep rapid dissemination but add lightweight quality checks that don’t slow us down.',
+        createdAt: '2024-04-12T12:00:00Z',
+    },
+    {
+        name: 'Irene K.',
+        role: 'Open science lead',
+        message: 'Let authors pick licenses easily so code, data, and text reuse is clear from the start.',
+        createdAt: '2024-04-18T12:00:00Z',
+    },
+    {
+        name: 'Gavin T.',
+        role: 'Reader & developer',
+        message: 'Build space for post-publication review—upvotes alone don’t capture expertise.',
+        createdAt: '2024-04-24T12:00:00Z',
+    },
+];
+
+const feedbackList = document.getElementById('feedback-items');
+const feedbackEmpty = document.getElementById('feedback-empty');
+const feedbackForm = document.getElementById('feedback-form');
+const waitlistPrompt = document.getElementById('waitlist-prompt');
+const waitlistForm = document.getElementById('waitlist-form');
+const waitlistEmail = document.getElementById('waitlist-email');
+const waitlistThanks = document.getElementById('waitlist-thanks');
+const WAITLIST_EMAIL_KEY = 'unseal-waitlist-email';
+
+const loadUserFeedback = () => {
+    try {
+        const stored = localStorage.getItem(FEEDBACK_STORAGE_KEY);
+        return stored ? JSON.parse(stored) : [];
+    } catch (_) {
+        return [];
+    }
+};
+
+const saveUserFeedback = (entries) => {
+    try {
+        localStorage.setItem(FEEDBACK_STORAGE_KEY, JSON.stringify(entries));
+    } catch (_) {
+        // Ignore storage failures.
+    }
+};
+
+let userFeedback = loadUserFeedback();
+
+const formatDate = (isoString) => {
+    if (!isoString) return '';
+    const date = new Date(isoString);
+    if (Number.isNaN(date.getTime())) return '';
+    return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+};
+
+const renderFeedback = () => {
+    if (!feedbackList || !feedbackEmpty) return;
+    feedbackList.innerHTML = '';
+    const combined = [...userFeedback, ...seedFeedback].sort((a, b) => {
+        const aTime = new Date(a.createdAt || Date.now()).getTime();
+        const bTime = new Date(b.createdAt || Date.now()).getTime();
+        return bTime - aTime;
+    });
+
+    if (!combined.length) {
+        feedbackEmpty.classList.remove('hidden');
+        return;
+    }
+
+    feedbackEmpty.classList.add('hidden');
+
+    combined.forEach((entry) => {
+        const card = document.createElement('div');
+        card.className = 'feedback-card';
+
+        const meta = document.createElement('div');
+        meta.className = 'feedback-meta';
+        const nameSpan = document.createElement('span');
+        nameSpan.textContent = entry.name || 'Anonymous';
+        const roleSpan = document.createElement('span');
+        roleSpan.textContent = entry.role || 'Community member';
+        const dateSpan = document.createElement('span');
+        dateSpan.textContent = formatDate(entry.createdAt);
+
+        meta.append(nameSpan, ' · ', roleSpan);
+        if (dateSpan.textContent) {
+            meta.append(' · ', dateSpan);
+        }
+
+        const message = document.createElement('p');
+        message.className = 'feedback-message';
+        message.textContent = entry.message;
+
+        card.append(meta, message);
+        feedbackList.appendChild(card);
+    });
+};
+
+feedbackForm?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const name = (formData.get('name') || '').toString().trim();
+    const role = (formData.get('role') || '').toString().trim();
+    const message = (formData.get('message') || '').toString().trim();
+
+    if (!message) return;
+
+    const newEntry = {
+        name: name || 'Anonymous',
+        role: role || 'Community member',
+        message,
+        createdAt: new Date().toISOString(),
+    };
+
+    userFeedback = [newEntry, ...userFeedback];
+    saveUserFeedback(userFeedback);
+    renderFeedback();
+    feedbackForm.reset();
+    if (waitlistPrompt) {
+        waitlistPrompt.classList.remove('hidden');
+        waitlistEmail?.focus();
+    }
+});
+
+waitlistForm?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    if (!waitlistEmail) return;
+    const email = waitlistEmail.value.trim();
+    if (!email || !email.includes('@')) return;
+    try {
+        localStorage.setItem(WAITLIST_EMAIL_KEY, email);
+    } catch (_) {
+        // Ignore storage failures.
+    }
+    waitlistThanks?.classList.remove('hidden');
+    waitlistEmail.value = '';
+});
+
+(() => {
+    const storedEmail = (() => {
+        try {
+            return localStorage.getItem(WAITLIST_EMAIL_KEY);
+        } catch (_) {
+            return null;
+        }
+    })();
+    if (storedEmail && waitlistPrompt && waitlistThanks) {
+        waitlistPrompt.classList.remove('hidden');
+        waitlistThanks.classList.remove('hidden');
+    }
+})();
+
+renderFeedback();
