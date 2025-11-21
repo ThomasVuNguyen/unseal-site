@@ -177,10 +177,11 @@ const seedFeedback = [
 const feedbackList = document.getElementById('feedback-items');
 const feedbackEmpty = document.getElementById('feedback-empty');
 const feedbackForm = document.getElementById('feedback-form');
-const waitlistPrompt = document.getElementById('waitlist-prompt');
+const waitlistModal = document.getElementById('waitlist-modal');
 const waitlistForm = document.getElementById('waitlist-form');
 const waitlistEmail = document.getElementById('waitlist-email');
 const waitlistThanks = document.getElementById('waitlist-thanks');
+const waitlistCloseButtons = document.querySelectorAll('[data-close-waitlist]');
 const WAITLIST_EMAIL_KEY = 'unseal-waitlist-email';
 
 const loadUserFeedback = () => {
@@ -207,6 +208,38 @@ const formatDate = (isoString) => {
     const date = new Date(isoString);
     if (Number.isNaN(date.getTime())) return '';
     return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+};
+
+const openWaitlistModal = () => {
+    if (!waitlistModal) return;
+    waitlistModal.classList.remove('hidden');
+    requestAnimationFrame(() => waitlistModal.classList.add('open'));
+    document.body.classList.add('waitlist-open');
+    if (waitlistEmail) waitlistEmail.focus();
+};
+
+const closeWaitlistModal = () => {
+    if (!waitlistModal) return;
+    waitlistModal.classList.remove('open');
+    document.body.classList.remove('waitlist-open');
+    setTimeout(() => waitlistModal.classList.add('hidden'), 260);
+};
+
+const hydrateWaitlist = () => {
+    if (!waitlistEmail || !waitlistThanks) return;
+    const storedEmail = (() => {
+        try {
+            return localStorage.getItem(WAITLIST_EMAIL_KEY);
+        } catch (_) {
+            return null;
+        }
+    })();
+    if (storedEmail) {
+        waitlistEmail.value = storedEmail;
+        waitlistThanks.classList.remove('hidden');
+    } else {
+        waitlistThanks.classList.add('hidden');
+    }
 };
 
 const renderFeedback = () => {
@@ -272,10 +305,8 @@ feedbackForm?.addEventListener('submit', (event) => {
     saveUserFeedback(userFeedback);
     renderFeedback();
     feedbackForm.reset();
-    if (waitlistPrompt) {
-        waitlistPrompt.classList.remove('hidden');
-        waitlistEmail?.focus();
-    }
+    hydrateWaitlist();
+    openWaitlistModal();
 });
 
 waitlistForm?.addEventListener('submit', (event) => {
@@ -292,18 +323,20 @@ waitlistForm?.addEventListener('submit', (event) => {
     waitlistEmail.value = '';
 });
 
-(() => {
-    const storedEmail = (() => {
-        try {
-            return localStorage.getItem(WAITLIST_EMAIL_KEY);
-        } catch (_) {
-            return null;
-        }
-    })();
-    if (storedEmail && waitlistPrompt && waitlistThanks) {
-        waitlistPrompt.classList.remove('hidden');
-        waitlistThanks.classList.remove('hidden');
+waitlistCloseButtons.forEach((button) => {
+    button.addEventListener('click', closeWaitlistModal);
+});
+
+waitlistModal?.addEventListener('click', (event) => {
+    if (event.target === waitlistModal) {
+        closeWaitlistModal();
     }
-})();
+});
+
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closeWaitlistModal();
+});
+
+hydrateWaitlist();
 
 renderFeedback();

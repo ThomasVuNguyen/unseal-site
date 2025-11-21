@@ -244,17 +244,6 @@
                         <p class="fine-print">Stored in your browser so you can see your post again.</p>
                     </div>
                 </form>
-                <div class="waitlist-box hidden" id="waitlist-prompt">
-                    <div class="paragraph svelte-ghnu1u tight">
-                        <h2 class="svelte-ghnu1u">Join the waitlist</h2>
-                        <p class="landing-paragraph svelte-ghnu1u">Drop your email so we can invite you when Unseal is ready.</p>
-                    </div>
-                    <form id="waitlist-form" class="waitlist-form">
-                        <input id="waitlist-email" name="email" type="email" placeholder="you@example.com" required />
-                        <button type="submit" class="button primary thin">Save my spot</button>
-                    </form>
-                    <p id="waitlist-thanks" class="fine-print hidden">Added! We’ll reach out when the waitlist opens.</p>
-                </div>
             </div>
         </section>
 
@@ -321,6 +310,26 @@
                 </div>
             </div>
         </footer>
+    </div>
+    <div class="waitlist-modal hidden" id="waitlist-modal">
+        <div class="waitlist-modal-backdrop" data-close-waitlist></div>
+        <div class="waitlist-modal-content">
+            <button class="modal-close" type="button" aria-label="Close waitlist" data-close-waitlist>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 6l-12 12"></path>
+                    <path d="M6 6l12 12"></path>
+                </svg>
+            </button>
+            <div class="paragraph svelte-ghnu1u tight">
+                <h2 class="svelte-ghnu1u">Join the waitlist</h2>
+                <p class="landing-paragraph svelte-ghnu1u">Thanks for the feedback. Drop your email so we can invite you when Unseal is ready.</p>
+            </div>
+            <form id="waitlist-form" class="waitlist-form">
+                <input id="waitlist-email" name="email" type="email" placeholder="you@example.com" required />
+                <button type="submit" class="button primary thin">Save my spot</button>
+            </form>
+            <p id="waitlist-thanks" class="fine-print hidden">Added! We’ll reach out when the waitlist opens.</p>
+        </div>
     </div>
     <div id="page-background" class="svelte-12qhfyh"></div>
     <script src="script.js"></script>
