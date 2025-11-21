@@ -1,4 +1,4 @@
-const DOWNLOAD_URL = 'https://github.com/imputnet/helium#downloads';
+const CTA_URL = window.location.href.split('#')[0];
 
 const menuToggle = document.getElementById('menu-toggle');
 const links = document.getElementById('links');
@@ -59,6 +59,15 @@ dialog?.addEventListener('cancel', (event) => {
 const isMobileEnv = () =>
     window.matchMedia('(max-width: 900px)').matches || /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
+const scrollToCTA = () => {
+    const target = document.getElementById('cta');
+    if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+        window.location.hash = '#cta';
+    }
+};
+
 const downloadButtons = document.querySelectorAll('[data-download-button]');
 downloadButtons.forEach((button) => {
     button.addEventListener('click', (event) => {
@@ -67,7 +76,7 @@ downloadButtons.forEach((button) => {
             openDialog();
             return;
         }
-        window.open(DOWNLOAD_URL, '_blank', 'noopener');
+        scrollToCTA();
     });
 });
 
@@ -83,7 +92,7 @@ const setCopyAnimation = () => {
 };
 
 const copyLink = async () => {
-    const url = DOWNLOAD_URL;
+    const url = CTA_URL;
     try {
         await navigator.clipboard.writeText(url);
         setCopyAnimation();
@@ -109,9 +118,9 @@ copyButton?.addEventListener('click', (event) => {
 shareButton?.addEventListener('click', async (event) => {
     event.preventDefault();
     const shareData = {
-        title: 'Helium Browser',
-        text: 'The web browser made for people, with love.',
-        url: DOWNLOAD_URL,
+        title: 'Unseal',
+        text: 'Publish knowledge and receive feedback without fees or wait times.',
+        url: CTA_URL,
     };
 
     if (navigator.share) {
@@ -129,8 +138,8 @@ shareButton?.addEventListener('click', async (event) => {
 
 remindButton?.addEventListener('click', (event) => {
     event.preventDefault();
-    const subject = 'Try Helium Browser later';
-    const body = `Check out Helium Browser: ${DOWNLOAD_URL}`;
+    const subject = 'Try Unseal later';
+    const body = `Check out Unseal: ${CTA_URL}`;
     window.open(`mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, '_blank');
 });
 
