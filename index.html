@@ -22,6 +22,16 @@
     <link rel="stylesheet" href="colors.css" />
     <link rel="stylesheet" href="fonts.css" />
     <link rel="stylesheet" href="styles.css" />
+    <style>
+        @media (max-width: 750px) {
+            footer.svelte-1sr6y3t {
+                justify-content: center !important;
+            }
+            footer.svelte-1sr6y3t .column.imput {
+                align-items: center;
+            }
+        }
+    </style>
 </head>
 <body>
     <header class="svelte-oiwvqb">
@@ -45,11 +55,12 @@
                     <div class="download-button svelte-1lhg5oc">
                         <button class="button primary svelte-1lhg5oc thin" data-download-button>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2"></path>
-                                <path d="M7 11l5 5l5 -5"></path>
-                                <path d="M12 4l0 12"></path>
+                                <path d="M16 21v-2a4 4 0 0 0 -4 -4h-4a4 4 0 0 0 -4 4v2"></path>
+                                <path d="M8.5 11a4 4 0 1 0 0 -8a4 4 0 0 0 0 8"></path>
+                                <path d="M20 8v6"></path>
+                                <path d="M23 11h-6"></path>
                             </svg>
-                            Download
+                            Join waitlist
                         </button>
                     </div>
                 </div>
@@ -127,9 +138,10 @@
                     <div class="download-button svelte-1lhg5oc">
                         <button class="button primary svelte-1lhg5oc" data-download-button>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2"></path>
-                                <path d="M7 11l5 5l5 -5"></path>
-                                <path d="M12 4l0 12"></path>
+                                <path d="M16 21v-2a4 4 0 0 0 -4 -4h-4a4 4 0 0 0 -4 4v2"></path>
+                                <path d="M8.5 11a4 4 0 1 0 0 -8a4 4 0 0 0 0 8"></path>
+                                <path d="M20 8v6"></path>
+                                <path d="M23 11h-6"></path>
                             </svg>
                             Join the waitlist
                         </button>
@@ -250,9 +262,10 @@
                 <div class="download-button svelte-1lhg5oc">
                     <button class="button primary svelte-1lhg5oc" data-download-button>
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2"></path>
-                            <path d="M7 11l5 5l5 -5"></path>
-                            <path d="M12 4l0 12"></path>
+                            <path d="M16 21v-2a4 4 0 0 0 -4 -4h-4a4 4 0 0 0 -4 4v2"></path>
+                            <path d="M8.5 11a4 4 0 1 0 0 -8a4 4 0 0 0 0 8"></path>
+                            <path d="M20 8v6"></path>
+                            <path d="M23 11h-6"></path>
                         </svg>
                         Join the waitlist
                     </button>
@@ -266,31 +279,12 @@
 
         <footer class="svelte-1sr6y3t">
             <div class="column imput svelte-1sr6y3t">
-                <div class="imput svelte-1sr6y3t">
+                <div class="imput svelte-1sr6y3t" style="display: flex; align-items: center; justify-content: center; gap: 1rem; flex-wrap: wrap;">
                     <span class="imput-logo svelte-1sr6y3t">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 532 283">
-                            <path fill="#fff" d="M0 282.717v-62.5886h531.441v62.5886z"></path>
-                            <path fill="#fff" d="m103.176 35.2625 54.20331759-31.2943 139.958 242.41436693-54.20331759 31.2943z"></path>
-                            <path fill="#fff" d="m368.95 0 54.20331759 31.2943-134.6 233.1340387L234.35 233.1340387z"></path>
-                        </svg>
+                        <img src="assets/unseal.svg" alt="Unseal" width="118" height="26" />
                     </span>
-                    <span class="imput-love svelte-1sr6y3t"><a href="https://imput.net/" target="_blank" rel="noopener noreferrer">imput.net</a></span>
+                    <span class="imput-love svelte-1sr6y3t">Fast and free dissemination of knowledge</span>
                 </div>
-            </div>
-            <div class="column svelte-1sr6y3t">
-                <div class="column-title">Legal stuff</div>
-                <a href="/privacy">Privacy policy</a>
-                <a href="/terms">Terms of use</a>
-            </div>
-            <div class="column svelte-1sr6y3t">
-                <div class="column-title">Resources</div>
-                <a href="/bangs">Bangs</a>
-                <a href="/sponsor">Sponsor</a>
-                <a href="https://github.com/imputnet/helium" target="_blank" rel="noopener noreferrer">GitHub</a>
-            </div>
-            <div class="column svelte-1sr6y3t">
-                <div class="column-title">Socials</div>
-                <a href="https://x.com/heliumbrowser" target="_blank" rel="noopener noreferrer">Twitter</a>
             </div>
         </footer>
     </div>
